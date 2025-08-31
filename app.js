@@ -47,6 +47,31 @@ app.get('/api/mascotas_mascota', (req, res) => {
   });
 });
 
+app.post('/api/listarmascotas', (req, res) => {
+  const { token } = req.body;
+
+  // 🔹 Validar que venga el token
+  if (!token) {
+    return res.status(400).json({ error: 'Token no proporcionado' });
+  }
+
+  // 🔹 Validar que el token sea correcto
+  if (token !== 'ABC123') {
+    return res.status(403).json({ error: 'Token inválido' });
+  }
+
+  // 🔹 Si el token es válido, hacer la consulta
+  const consulta = 'SELECT * FROM mascotas_mascota';
+  conexion.query(consulta, (err, resultados) => {
+    if (err) {
+      console.error('Error en la consulta:', err);
+      res.status(500).json({ error: 'Error en la consulta' });
+    } else {
+      res.json(resultados);
+    }
+  });
+});
+
 // Escuchar el servidor una sola vez
 app.listen(puerto, () => {
   console.log(`Servidor iniciado en http://localhost:${puerto}`);
